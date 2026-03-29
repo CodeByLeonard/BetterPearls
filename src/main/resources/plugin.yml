@@ -1,0 +1,4 @@
+name: BetterPearls
+version: '1.0-SNAPSHOT'
+main: com.ranoe.betterPearls.BetterPearls
+api-version: '1.21'
