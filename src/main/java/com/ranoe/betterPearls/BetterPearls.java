@@ -13,7 +13,6 @@ public final class BetterPearls extends JavaPlugin {
         instance = this;
 
         Bukkit.getPluginManager().registerEvents(new PlayerInteractHandler(), instance);
-
         Bukkit.getScheduler().runTaskTimer(instance, PearlLogic::runTaskTimer20, 0L, 20L);
     }
 }

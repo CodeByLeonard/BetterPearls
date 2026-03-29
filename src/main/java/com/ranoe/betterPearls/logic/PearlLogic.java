@@ -1,6 +1,8 @@
 package com.ranoe.betterPearls.logic;
 
 import com.ranoe.betterPearls.BetterPearls;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.bukkit.Bukkit;
@@ -13,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -22,6 +23,11 @@ import java.util.regex.Pattern;
 
 public class PearlLogic {
 
+    /*
+     * if (itemStack.displayName() instanceof TextComponent text) {
+     *     String _displayName = text.content();
+     * }
+     */
     public static String displayName(ItemStack itemStack) {
         String displayName = PlainTextComponentSerializer.plainText().serialize(itemStack.displayName());
         return displayName.replace("[", "").replace("]", "");
@@ -81,6 +87,7 @@ public class PearlLogic {
         Vector start = eyeLocation.toVector().add(eyeDirection);
         Vector end = targetBlock.getLocation().toCenterLocation().toVector().subtract(new Vector(0, 0.5, 0));
         double distance = start.distance(end);
+
         new BukkitRunnable() {
             final double step = 0.15 / distance;
             double t = 0;
@@ -102,12 +109,11 @@ public class PearlLogic {
         }.runTaskTimer(BetterPearls.instance, 0L, 1L);
     }
 
-
     /**
      * @deprecated in favour of {@link #executeAlongPath(Player, Block, Consumer)}
      */
     @Deprecated
-    public static void generatePath(@NonNull Player player, Block targetBlock) {
+    public static void generatePath(Player player, Block targetBlock) {
         Location eyeLocation = player.getEyeLocation();
         Vector eyeDirection = eyeLocation.getDirection().normalize();
         Vector start = eyeLocation.toVector().add(eyeDirection);
@@ -128,7 +134,8 @@ public class PearlLogic {
             Block targetBlock = PearlLogic.getTargetBlock(player, itemInMainHand);
             if (targetBlock == null) return;
             Block validTarget = PearlLogic.validTarget(targetBlock);
-            if (validTarget != null) PearlLogic.executeAlongPath(player, validTarget, (position) -> {
+            if (validTarget == null) return;
+            PearlLogic.executeAlongPath(player, validTarget, (position) -> {
                 player.getWorld().spawnParticle(Particle.HAPPY_VILLAGER,
                         position.getX(), position.getY(), position.getZ(),
                         0, 0, 0, 0, 0, null);
